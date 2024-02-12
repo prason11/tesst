@@ -5,13 +5,13 @@ on:
     branches: [ main ]
 
 jobs:
-  
+
   build:
-    
+
     name: Build Image
     runs-on: ubuntu-latest
 
-   
+
     steps:
 
     - name: Check out code
@@ -26,28 +26,27 @@ jobs:
         AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
         AWS_REGION: us-east-1
 
-    - name: Build, test, tag, and push image to Amazon ECR database sql
+    - name: Build, test, tag, and push image to Amazon ECR database
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: mysql
         IMAGE_TAG: v1.1
       run: |
         #cd Chapter02/kubia/
-        #ls -ltra
-        # Docker build
+        
+        # Docker build image database
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile_mysql .
-       
+        # Docker push image
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-
-    - name: Build, test, tag, and push image to Amazon ECR webapp
+    - name: Build, test, tag, and push image for Amazon ECR app
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: webapp
         IMAGE_TAG: v1.1
       run: |
-        # cd Chapter02/kubia/
-        # ls -ltra
-        # Docker build
+        #cd Chapter02/kubia/
+        #ls -ltra
+        # Docker build app
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
+        # Docker push
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
